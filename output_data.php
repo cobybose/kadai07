@@ -1,85 +1,52 @@
 <?php
-include("func.php");
 
-$income1 = $_POST["income1"];
-$income2 = $_POST["income2"];
-$income3 = $_POST["income3"];
-$money1 = $_POST["money1"];
-$money2 = $_POST["money2"];
-$money3 = $_POST["money3"];
+//1. POST受信
+$salary    = $_POST["salary"];
+$bonus     = $_POST["bonus"];
+$other_rev = $_POST["other_rev"];
+$food = $_POST["food"];
+$utility = $_POST["utility"];
+$trans_net = $_POST["trans_net"];
+$housing = $_POST["housing"];
+$daily = $_POST["daily"];
+$social = $_POST["social"];
+$other_exp = $_POST["other_exp"];
 
-for($i=1; $i<4; $i++){
-    cell()
+
+//2. DB接続
+try {
+  $pdo = new PDO('mysql:dbname=gs_db31;charset=utf8;host=localhost','root','');
+} catch (PDOException $e) {
+  exit('DbConnectError:'.$e->getMessage());
 }
 
-//$age = $_POST["age"];
-//$name = $_POST["name"];
-//$email = $_POST["email"];
-//$quest = $_POST["quest"];
 
-//書き込み
-//$jis_name = mb_convert_encoding($name,"sjis","utf-8");//文字コードをutf-8からシフトjisに変換
-//$jis_quest = mb_convert_encoding($quest,"sjis","utf-8");//文字コードをutf-8からシフトjisに変換
+//３．SQLを作って実行
+$stmt = $pdo->prepare("INSERT INTO gs_ac_table(id, indate, salary, bonus,
+other_rev, food, utility, trans_net, housing, daily, social, other_exp)VALUES(NULL, sysdate(), :salary, :bonus, :other_rev, :food, :utility, :trans_net, :housing, :daily, :social, :other_exp)");
+$stmt->bindValue(':salary',   $salary,   PDO::PARAM_INT); //PARAM_STR or PARAM_INTを書く。（セキュリティ高くするもの）
+$stmt->bindValue(':bonus',  $bonus,  PDO::PARAM_INT);
+$stmt->bindValue(':other_rev', $other_rev, PDO::PARAM_INT);
+$stmt->bindValue(':food', $food, PDO::PARAM_INT);
+$stmt->bindValue(':utility', $utility, PDO::PARAM_INT);
+$stmt->bindValue(':trans_net', $trans_net, PDO::PARAM_INT);
+$stmt->bindValue(':housing', $housing, PDO::PARAM_INT);
+$stmt->bindValue(':daily', $daily, PDO::PARAM_INT);
+$stmt->bindValue(':social', $social, PDO::PARAM_INT);
+$stmt->bindValue(':other_exp', $other_exp, PDO::PARAM_INT);
+$status = $stmt->execute();//errorになったら、$statusにfalseが入ってくる。
 
-//$d = date("Y-m-d H:i:s");
-//$str = $d.",".$jis_name.",".$email.",".$jis_quest.",".$age;
+//４．
+if($status==false){
+  $error = $stmt->errorInfo();
+  exit("QueryError:".$error[2]);//error文が３つ帰ってくるが、2つ目が英語の文になっているため。
+  
+}else{
+  header("Location: input_data.php");
+  exit;
 
-$str = $income1.",".$money1.",".$income2.",".$money2.",".$income3.",".$money3;
-$file = fopen("data/data.csv","a");	// ファイル読み込み
-flock($file, LOCK_EX);			// ファイルロック
-fwrite($file, $str."\n");
-flock($file, LOCK_UN);			// ファイルロック解除
-fclose($file);
-
-
-
-$sum1 = 0;
-$sum2 = 0;
-$sum3 = 0;
-$sum4 = 0;
-$sum5 = 0;
-$sum6 = 0;
-$fp = fopen('data/data.csv','r');
-$count = count( file('data/data.csv') );
-while ($csv = fgetcsv($fp)) {
-$ans1 = $csv[0];
-$ans2 = $csv[1];
-$ans3 = $csv[2];
-$ans4 = $csv[3];
-$ans5 = $csv[4];
-$ans6 = $csv[5];
-//print $sum ."<br>";
-//$sum1 += $ans1;
-$sum2 += $ans2;
-//$sum3 += $ans3;
-$sum4 += $ans4;
-//$sum5 += $ans5;
-$sum6 += $ans6;
 }
 
-//print $sum1 . "<br>";
-print $sum2 . "<br>";
-//print $sum3 . "<br>";
-print $sum4 . "<br>";
-//print $sum5 . "<br>";
-print $sum6 . "<br>";
-print $count;
-
-//print $sum1/$count . "<br>";
-//print $sum2/$count . "<br>";
-//print $sum3/$count . "<br>";
-//print $sum4/$count . "<br>";
-//print $sum5/$count . "<br>";
-//print $sum6/$count . "<br>";
-//print $count;
-
-//for($i=0;$i<6;$i++){
-//    if($str[$i]=="1"){
-//        $s[$i]="正解";
-//    }else{
-//        $s[$i]="不正解";
-//    }
-//}
 
 ?>
     <!DOCTYPE html>
@@ -92,67 +59,7 @@ print $count;
     </head>
 
     <body>
-        <h1>回答！！</h1>
-        <div class="ans-wrap">
-            <div class="title">
-            <h3 class="qnum">第1問：</h3>
-            <h3>
-                <?= h($q1)." 正解率:".round(($sum1/$count)*100,1)."%"; ?>
-            </h3>
-            </div>
-            <p class="p-ans">正解は「20分」です。</br>
-                ライオンなどの肉食動物に襲われないように常に警戒していなければならないため、長時間は眠りません！</p>
-        </div>
-        <div class="ans-wrap">
-            <div class="title">
-            <h3 class="qnum">第2問：</h3>
-            <h3>
-                <?= h($q2)." 正解率:".round(($sum2/$count)*100,1)."%"; ?>
-            </h3>
-            </div>
-            <p class="p-ans">正解は「特に何も考えていない」です。</br>
-                『地獄に落ちていく罪人を、上からじっと見ているところ』を表現しており、何かを考えているわけではないのです！</p>
-        </div>
-        <div class="ans-wrap">
-            <div class="title">
-            <h3 class="qnum">第3問：</h3>
-            <h3>
-                <?= h($q3)." 正解率:".round(($sum3/$count)*100,1)."%"; ?>
-            </h3>
-            </div>
-            <p class="p-ans">正解は「④約38.5℃」です。</br>
-                人間と比べて心拍数が高く、運動量が多いことが理由です！</p>
-        </div>
-        <div class="ans-wrap">
-            <div class="title">
-            <h3 class="qnum">第4問：</h3>
-            <h3>
-                <?= h($q4)." 正解率:".round(($sum4/$count)*100,1)."%"; ?>
-            </h3>
-            </div>
-            <p class="p-ans">正解は「③肉球」です。</br>
-                あまり汗をかかないぶん、熱中症になりやすいので要注意！</p>
-        </div>
-        <div class="ans-wrap">
-            <div class="title">
-            <h3 class="qnum">第5問：</h3>
-            <h3>
-                <?= h($q5)." 正解率:".round(($sum5/$count)*100,1)."%"; ?>
-            </h3>
-            </div>
-            <p class="p-ans">正解は「①３種類」です。</br>
-                ネコの血液型は、Ａ型・Ｂ型・AB型の３種類しかありません！</p>
-        </div>
-        <div class="ans-wrap">
-            <div class="title">
-            <h3 class="qnum">第6問：</h3>
-            <h3>
-                <?= h($q6)." 正解率:".round(($sum6/$count)*100,1)."%"; ?>
-            </h3>
-            </div>
-            <p class="p-ans">正解は「⑤百万倍」です。</br>
-                イヌは嗅覚に関係する「嗅細胞」や「嗅粘膜」が人間よりも発達しているため、嗅覚が優れているのです！</p>
-        </div>
+
 
     </body>
 
