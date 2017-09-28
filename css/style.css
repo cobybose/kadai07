@@ -2,55 +2,40 @@ body{
     text-align: center;
 }
 h1{
-    text-align: center;
+    
 }
 h2{
     font-size: 20px;
-    margin-bottom:5px;
-}
-h3{
-    color: red;
-    margin-top: 5px;
-}
-h3.qnum{
-    color: black;
-    margin-top: :5px;
-}
-h4{
-    margin-top: 5px;
+    margin: 5px 0;
 }
 p{
     font-size: 18px;
+    margin: 5px 0;
 }
-p.p-ans{
-    margin-top: 0;
-    margin-bottom: 50px;
-/*    border-bottom: solid 10px #ff0000;*/
+.wrap_in{
+    width: 40%;
+    padding: 5px 0;
+    margin: auto;
+    background-color:bisque;
+    border-radius: 20px;
+}
+.wrap_out{
+    width: 40%;
+    padding: 5px 0;
+    margin: auto;
+    background-color:aqua;
+    border-radius: 20px;
+}
+input.button{
+    margin-top: 10px;
 }
 .wrap{
     display: flex;
-    justify-content:space-between;
-}
-.contents-img{
-    width: 30%;
-}
-.contents-q{
-    width: 70%;
-    text-align: left;
-}
-.ans-wrap{
-    margin-bottom: 50px;
-    text-align: left;
-    width: 70%;
-    margin: auto;
-    border-bottom: solid 10px #ff0000;
+    flex-wrap: wrap;
+    justify-content:center;
+    margin-bottom: 10px;
 }
 .title{
-    display: flex;
-    justify-content: flex-start;
-    vertical-align: middle;
-    padding-bottom: 0px;
-}
-select{
-    width: 100px;
+    text-align: left;
+    width: 30%;
 }
